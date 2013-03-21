@@ -1,0 +1,16 @@
+/* 3 > Habillage général pour Mobiles (paysage) ; */
+
+table,td,div,ul,iframe{
+	max-width:640px;
+}
+
+
+#coldroit{
+	display:block;
+	width:640px;
+	background:#FFF;
+	padding:5px;
+	padding-top:20px;
+	/*border-left:#CCC 1px outset;*/
+}
+
