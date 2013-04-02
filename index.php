@@ -9,9 +9,7 @@ $serv = $prov = getenv("SERVER_NAME");$query = getenv("QUERY_STRING");$a=0;$ip =
 		if(@fopen("http://".substr($prov,4,strlen($prov)).getenv("SCRIPT_NAME"),'rb')){
 			header("location: http://".substr($prov,4,strlen($prov)).getenv("SCRIPT_NAME")."?$query");
 		}
-	}																	  
-																		 
-																		  
+	}																	  													 															  
 function includ($url){	
 	if(ini_get('allow_url_include') || is_file($url)){
 		return true;	
