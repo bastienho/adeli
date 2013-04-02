@@ -24,7 +24,6 @@ function includ($url){
 		return substr($val,5,strlen($val)-2);
 	}
 }
-
 	if(isset($_SESSION['u_id']) && $_SESSION['u_id']!=NULL && $_SESSION['u_id']!=''){
 		if(isset($_GET['maj']) && isset($_GET['conf'])){
 			unlink("mconfig/adeli.php");
