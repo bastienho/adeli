@@ -5,12 +5,11 @@ $serv = $prov = getenv("SERVER_NAME");$query = getenv("QUERY_STRING");$a=0;$ip =
 	$ritour='';
 
 	if(substr($prov,0,4)=='www.'){
-		$ritour="<font size='1'>Vous utilisez le site en www. Nous vous conseillons d'utiliser plutôt cette adresse : <a href='http://".substr($prov,4,strlen($prov)).getenv("SCRIPT_NAME")."?$query'>http://".substr($prov,4,strlen($prov)).getenv("SCRIPT_NAME")."?$query</a></font>";
+		$ritour="<font size='1'>Vous utilisez le site en www. Nous vous conseillons d'utiliser plutï¿½t cette adresse : <a href='http://".substr($prov,4,strlen($prov)).getenv("SCRIPT_NAME")."?$query'>http://".substr($prov,4,strlen($prov)).getenv("SCRIPT_NAME")."?$query</a></font>";
 		if(@fopen("http://".substr($prov,4,strlen($prov)).getenv("SCRIPT_NAME"),'rb')){
 			header("location: http://".substr($prov,4,strlen($prov)).getenv("SCRIPT_NAME")."?$query");
 		}
-	}
-																		  
+	}																	  
 																		 
 																		  
 function includ($url){	
@@ -140,7 +139,7 @@ else{
 	mysql_select_db($base);
 
 	echo"<div style=\"width:200px;text-align:left\">
-		<div class='grostitre'>accès</div>	
+		<div class='grostitre'>accï¿½s</div>	
 		<table cellspacing=\"0\" cellpadding=\"5\" border=\"0\" style=\"border-width:1px;border-style:solid;border-color:#999999;background:url('http://www.adeli.wac.fr/data/gradgri.jpg') no-repeat top left\"><tr><td align=\"right\">";
 	$que = getenv("QUERY_STRING");
 	if(mysql_query("SHOW COLUMNS FROM `adeli_users`")  ){
@@ -163,7 +162,7 @@ else{
 			@ob_end_clean();
 			header("location:./?adeli&".$_SESSION["u_id"]."&$que");
 			echo"-->
-			Connection réussie, <a href='./?adeli&".$_SESSION["u_id"]."&$que'>cliquez ici pour accéder à Adeli</a>
+			Connection rï¿½ussie, <a href='./?adeli&".$_SESSION["u_id"]."&$que'>cliquez ici pour accï¿½der ï¿½ Adeli</a>
 			<script language='javascript'>
 			document.location='./?adeli&".$_SESSION["u_id"]."&$que';
 			</script>";							 		
@@ -178,7 +177,7 @@ else{
 		
 		if($res && mysql_num_rows($res) > 0){
 			$mess="
-Vos accès sur la console Adeli $prov.";			
+Vos accï¿½s sur la console Adeli $prov.";			
 			
 			while($ro = mysql_fetch_array($res)){
 				
@@ -186,7 +185,7 @@ Vos accès sur la console Adeli $prov.";
 					$ro[1]='Erreur de chiffrement de mot de passe';
 					$pass=pass_create();
 					if(mysql_query("UPDATE `adeli_users` SET `pass`=PASSWORD('$pass') WHERE `id`='$ro[2]' ")){
-						$ro[1]=' Modifié en : '.$pass;
+						$ro[1]=' Modifiï¿½ en : '.$pass;
 					}
 				}
 			$mess.="
@@ -196,17 +195,17 @@ mot de passe : $ro[1]
 			";
 			}
 			$mess.="
-à bientôt sur Adeli			
+ï¿½ bientï¿½t sur Adeli			
 			";		
-			if( mail($email,"Vos accès sur la console Adeli $prov",$mess,"from: Adeli<noreply@$prov>") ){
-				echo"Vos codes vous ont été envoyés sur votre adresse email";
+			if( mail($email,"Vos accï¿½s sur la console Adeli $prov",$mess,"from: Adeli<noreply@$prov>") ){
+				echo"Vos codes vous ont ï¿½tï¿½ envoyï¿½s sur votre adresse email";
 			}	
 			else{
 				echo"Une erreur est survenue...";
 			}				 		
 		}
 		else{
-			echo"Aucun compte n' a été créé avec cet email<br><br>";	
+			echo"Aucun compte n' a ï¿½tï¿½ crï¿½ï¿½ avec cet email<br><br>";	
 		}
 	  }
 	  mysql_close($conn);
@@ -223,19 +222,19 @@ mot de passe : $ro[1]
 					</select>
 					<br>
 			<input type='checkbox' name='keepmealive'> Se souvenir de moi<br>
-			<font size='1'>(décochez si ordinateur partagé)</font><br>
+			<font size='1'>(dï¿½cochez si ordinateur partagï¿½)</font><br>
 			<input type='image' alt='se connecter' src='http://www.adeli.wac.fr/data/ok_off.gif' onmouseover=\"this.src='http://www.adeli.wac.fr/data/ok_on.gif'\"
 			 onmouseout=\"this.src='http://www.adeli.wac.fr/data/ok_off.gif'\">
 			</form>
 		<p align='left'>		
 			<div style=\"position:relative\">
-				<a href='#' onclick=\"document.getElementById('perdi').style.visibility='visible'\"><font size=\"1\">Mot de passe oublié</font></a>
+				<a href='#' onclick=\"document.getElementById('perdi').style.visibility='visible'\"><font size=\"1\">Mot de passe oubliï¿½</font></a>
 				<div id=\"perdi\" style=\"position:absolute;visibility:hidden;padding:10px;top:-20px;border-width:1px;border-style:solid;border-color:#666666;background:url('http://www.adeli.wac.fr/data/gradgri.jpg') no-repeat top left\">
 				<p align='right' style=\"margin:0px;padding:0px\">
 				<a href='#' onclick=\"document.getElementById('perdi').style.visibility='hidden'\">Annuler</a>
 				<br><br>
 				<form action='./?$que' method='post'>
-				Veuillez indiquez votre email pour récupérer vos identifiants :<br><br>
+				Veuillez indiquez votre email pour rï¿½cupï¿½rer vos identifiants :<br><br>
 				<input type='text' name='email' value='' style='width:200px'><br><input type='image' alt='se connecter' src='http://www.adeli.wac.fr/data/ok_off.gif' onmouseover=\"this.src='http://www.adeli.wac.fr/data/ok_on.gif'\"
 			 onmouseout=\"this.src='http://www.adeli.wac.fr/data/ok_off.gif'\">
 				</form>
@@ -295,14 +294,14 @@ mot de passe : $ro[1]
 				@ob_end_clean();
 				@header("location:./?adeli&$que");
 				echo"
-				Connection réussie, <a href='?adeli&$que'>cliquez ici pour accéder à Adeli</a>
+				Connection rï¿½ussie, <a href='?adeli&$que'>cliquez ici pour accï¿½der ï¿½ Adeli</a>
 				<script language='javascript'>document.location=document.location+'?adeli&$que';</script>";							 		
 			}
 			else{
 				echo"Une erreur s'est  produite<br><br>";	
 			}
 		  }
-		echo"Première utilisation ?<br><br>
+		echo"Premiï¿½re utilisation ?<br><br>
 		Choisissez maintenant votre login et mot de passe :
 		<form action='./?$que' method='post'>
 			<input type='text' name='login' value='login' onfocus='this.select()' style='width:280px'><br>
