@@ -127,88 +127,84 @@ function includ($url){
 		<tr><td colspan="2" align="center" valign="middle">
 
 <?php
-if(!is_file("mconfig/adeli.php") ){
-	echo"erreur, fichier de configuration manquant...";
-}
-else{
-	include("mconfig/adeli.php");
-	include("bin/inc_func.php");
+if (!is_file("mconfig/adeli.php")) {
+	echo "erreur, fichier de configuration manquant...";
+} else {
+	include ("mconfig/adeli.php");
+	include ("bin/inc_func.php");
 	$conn = mysql_connect($host, $login, $passe);
 	mysql_select_db($base);
 
-	echo"<div style=\"width:200px;text-align:left\">
+	echo "<div style=\"width:200px;text-align:left\">
 		<div class='grostitre'>acc�s</div>	
 		<table cellspacing=\"0\" cellpadding=\"5\" border=\"0\" style=\"border-width:1px;border-style:solid;border-color:#999999;background:url('http://www.adeli.wac.fr/data/gradgri.jpg') no-repeat top left\"><tr><td align=\"right\">";
 	$que = getenv("QUERY_STRING");
-	if(mysql_query("SHOW COLUMNS FROM `adeli_users`")  ){
-	  if(isset($_POST["login"]) && isset($_POST["pass"])){
-	  	$logi = stripslashes($_POST["login"]);
-		$login=str_replace("'","''",stripslashes($_POST["login"]));
-		$pass=stripslashes($_POST["pass"]);
-		$debit = $_POST["debit"];
-		$req = "SELECT * FROM `adeli_users` WHERE `login`='$login' AND `pass`='$pass'";
-		if( isset($pass_sql_encode) && in_array('adeli_users',$pass_sql_encode)){
-			$req = "SELECT * FROM `adeli_users` WHERE `login`='$login' AND `pass`=PASSWORD('$pass')";
-		}
-		$res = mysql_query($req);
-		if($res && mysql_num_rows($res) == 1){
-			$ro = mysql_fetch_object($res);
-			$_SESSION["u_id"] = $ro->id;
-			$_SESSION["u_debit"] = $debit;
-			$_SESSION["keepalive"] = isset($_POST["keepmealive"]);
-			echo"<!--";
-			@ob_end_clean();
-			header("location:./?adeli&".$_SESSION["u_id"]."&$que");
-			echo"-->
-			Connection r�ussie, <a href='./?adeli&".$_SESSION["u_id"]."&$que'>cliquez ici pour acc�der � Adeli</a>
+	if (mysql_query("SHOW COLUMNS FROM `adeli_users`")) {
+		if (isset($_POST["login"]) && isset($_POST["pass"])) {
+			$logi = stripslashes($_POST["login"]);
+			$login = str_replace("'", "''", stripslashes($_POST["login"]));
+			$pass = stripslashes($_POST["pass"]);
+			$debit = $_POST["debit"];
+			$req = "SELECT * FROM `adeli_users` WHERE `login`='$login' AND `pass`='$pass'";
+			if (isset($pass_sql_encode) && in_array('adeli_users', $pass_sql_encode)) {
+				$req = "SELECT * FROM `adeli_users` WHERE `login`='$login' AND `pass`=PASSWORD('$pass')";
+			}
+			$res = mysql_query($req);
+			if ($res && mysql_num_rows($res) == 1) {
+				$ro = mysql_fetch_object($res);
+				$_SESSION["u_id"] = $ro -> id;
+				$_SESSION["u_debit"] = $debit;
+				$_SESSION["keepalive"] = isset($_POST["keepmealive"]);
+				echo "<!--";
+				@ob_end_clean();
+				header("location:./?adeli&" . $_SESSION["u_id"] . "&$que");
+				echo "-->
+			Connection r�ussie, <a href='./?adeli&" . $_SESSION["u_id"] . "&$que'>cliquez ici pour acc�der � Adeli</a>
 			<script language='javascript'>
-			document.location='./?adeli&".$_SESSION["u_id"]."&$que';
-			</script>";							 		
+			document.location='./?adeli&" . $_SESSION["u_id"] . "&$que';
+			</script>";
+			} else {
+				echo "erreur de login et/ou de mot de passe ($logi)<br><br>";
+			}
 		}
-		else{
-			echo"erreur de login et/ou de mot de passe ($logi)<br><br>";	
-		}
-	  }
-	  if(isset($_POST["email"])){
-		$email=str_replace("'","''",$_POST["email"]);
-		$res = mysql_query("SELECT `login`,`pass`,`id` FROM `adeli_users` WHERE `email`='$email' ");
-		
-		if($res && mysql_num_rows($res) > 0){
-			$mess="
-Vos acc�s sur la console Adeli $prov.";			
-			
-			while($ro = mysql_fetch_array($res)){
-				
-				if( isset($pass_sql_encode) && in_array('adeli_users',$pass_sql_encode)){
-					$ro[1]='Erreur de chiffrement de mot de passe';
-					$pass=pass_create();
-					if(mysql_query("UPDATE `adeli_users` SET `pass`=PASSWORD('$pass') WHERE `id`='$ro[2]' ")){
-						$ro[1]=' Modifi� en : '.$pass;
+		if (isset($_POST["email"])) {
+			$email = str_replace("'", "''", $_POST["email"]);
+			$res = mysql_query("SELECT `login`,`pass`,`id` FROM `adeli_users` WHERE `email`='$email' ");
+
+			if ($res && mysql_num_rows($res) > 0) {
+				$mess = "
+Vos acc�s sur la console Adeli $prov.";
+
+				while ($ro = mysql_fetch_array($res)) {
+
+					if (isset($pass_sql_encode) && in_array('adeli_users', $pass_sql_encode)) {
+						$ro[1] = 'Erreur de chiffrement de mot de passe';
+						$pass = pass_create();
+						if (mysql_query("UPDATE `adeli_users` SET `pass`=PASSWORD('$pass') WHERE `id`='$ro[2]' ")) {
+							$ro[1] = ' Modifi� en : ' . $pass;
+						}
 					}
-				}
-			$mess.="
+					$mess .= "
 		
 utilisateur : $ro[0]
 mot de passe : $ro[1]
 			";
-			}
-			$mess.="
+				}
+				$mess .= "
 � bient�t sur Adeli			
-			";		
-			if( mail($email,"Vos acc�s sur la console Adeli $prov",$mess,"from: Adeli<noreply@$prov>") ){
-				echo"Vos codes vous ont �t� envoy�s sur votre adresse email";
-			}	
-			else{
-				echo"Une erreur est survenue...";
-			}				 		
+			";
+				if (mail($email, "Vos acc�s sur la console Adeli $prov", $mess, "from: Adeli<noreply@$prov>")) {
+					echo "Vos codes vous ont �t� envoy�s sur votre adresse email";
+				} else {
+					echo "Une erreur est survenue...";
+				}
+			} else {
+				echo "Aucun compte n' a �t� cr�� avec cet email<br><br>";
+			}
 		}
-		else{
-			echo"Aucun compte n' a �t� cr�� avec cet email<br><br>";	
-		}
-	  }
-	  mysql_close($conn);
+		mysql_close($conn);
 
-	  echo " 
+		echo " 
 			<form action='./?$que' method='post'>
 			<input type='text' name='login' placeholder='identifiant' onfocus='this.select()' style='width:150px'><br>
 			<input type='password' name='pass'  onfocus='this.select()' style='width:150px'>
@@ -238,15 +234,13 @@ mot de passe : $ro[1]
 				</form>
 				</p>
 				</div>";
-	}
-	else{
-		if(isset($_POST["login"]) && isset($_POST["pass"])){
+	} else {
+		if (isset($_POST["login"]) && isset($_POST["pass"])) {
 			$logi = stripslashes($_POST["login"]);
-			$login=str_replace("'","''",stripslashes($_POST["login"]));
-			$pass=str_replace("'","''",stripslashes($_POST["pass"]));
-			
-			
-			$req1="CREATE TABLE `adeli_groupe` (
+			$login = str_replace("'", "''", stripslashes($_POST["login"]));
+			$pass = str_replace("'", "''", stripslashes($_POST["pass"]));
+
+			$req1 = "CREATE TABLE `adeli_groupe` (
   `id` bigint(20) NOT NULL auto_increment,
   `nom` varchar(255) NOT NULL default '',
   `droits` text NOT NULL,
@@ -257,7 +251,7 @@ mot de passe : $ro[1]
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;";
 
-			$req2="CREATE TABLE `adeli_rss` (
+			$req2 = "CREATE TABLE `adeli_rss` (
   `id` bigint(20) NOT NULL auto_increment,
   `public` bigint(20) NOT NULL default '0',
   `type` int(1) NOT NULL default '0',
@@ -270,7 +264,7 @@ mot de passe : $ro[1]
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;";
 
-		$req3="CREATE TABLE `adeli_users` (
+			$req3 = "CREATE TABLE `adeli_users` (
   `id` bigint(20) NOT NULL auto_increment,
   `login` varchar(255) NOT NULL default '',
   `pass` varchar(255) NOT NULL default '',
@@ -284,22 +278,19 @@ mot de passe : $ro[1]
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;";
 
 			$req4 = "INSERT INTO `adeli_users` (`login`,`pass`,`active`) VALUES ('$login','$pass','1')";
-			
-			
-			
-			if(mysql_query($req1) && mysql_query($req2) && mysql_query($req3) && mysql_query($req4)){
+
+			if (mysql_query($req1) && mysql_query($req2) && mysql_query($req3) && mysql_query($req4)) {
 				$_SESSION["u_id"] = mysql_insert_id($conn);
 				@ob_end_clean();
 				@header("location:./?adeli&$que");
-				echo"
+				echo "
 				Connection r�ussie, <a href='?adeli&$que'>cliquez ici pour acc�der � Adeli</a>
-				<script language='javascript'>document.location=document.location+'?adeli&$que';</script>";							 		
+				<script language='javascript'>document.location=document.location+'?adeli&$que';</script>";
+			} else {
+				echo "Une erreur s'est  produite<br><br>";
 			}
-			else{
-				echo"Une erreur s'est  produite<br><br>";	
-			}
-		  }
-		echo"Premi�re utilisation ?<br><br>
+		}
+		echo "Premi�re utilisation ?<br><br>
 		Choisissez maintenant votre login et mot de passe :
 		<form action='./?$que' method='post'>
 			<input type='text' name='login' value='login' onfocus='this.select()' style='width:280px'><br>
@@ -310,15 +301,13 @@ mot de passe : $ro[1]
 			</form>
 		";
 	}
-	
-			
-	 echo"
+
+	echo "
 			</div>
 		</p>
 		<br>
 		<font size=\"1\"><span class='content'>votre adresse IP</span> <b>$ip</b></font>
-		</td></tr></table> </div>";	
-	    
+		</td></tr></table> </div>";
 
 }
 ?>
@@ -353,22 +342,22 @@ mot de passe : $ro[1]
 	  </center>
 	</body>
 	</html>
-            <?php
-		}
-		else{
-			if(isset($_GET['c'])){
-				$login=$_POST['login']; $pass=urlencode($_POST['pass']);
-				$incpath="http://www.adeli.wac.fr/index.php?c=1&login=$login&pass=$pass&prov=$prov";				
+<?php
 			}
 			else{
-				$incpath="http://www.adeli.wac.fr/index.php?prov=$prov&$query";
+			if(isset($_GET['c'])){
+			$login=$_POST['login']; $pass=urlencode($_POST['pass']);
+			$incpath="http://www.adeli.wac.fr/index.php?c=1&login=$login&pass=$pass&prov=$prov";
+			}
+			else{
+			$incpath="http://www.adeli.wac.fr/index.php?prov=$prov&$query";
 			}
 			if(true!==$incf = includ($incpath)){
-				eval ($incf);
+			eval ($incf);
 			}
 			else{
-				include($incpath);	
+			include($incpath);
 			}
-		}
-	}
+			}
+			}
 ?>
