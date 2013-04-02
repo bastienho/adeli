@@ -335,9 +335,6 @@ mot de passe : $ro[1]
 		</td>
 		</tr>
 	</table>
-	  
-	  
-
 	  </center>
 	</body>
 	</html>
